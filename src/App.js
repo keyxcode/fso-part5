@@ -2,26 +2,33 @@ import { useState, useEffect } from "react";
 import Blog from "./components/Blog";
 import LoginForm from "./components/LoginForm";
 import blogService from "./services/blogs";
+import loginService from "./services/login";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [username, setusername] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    console.log("hi");
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    try {
+      await loginService.login({ username, password });
+      setUsername("");
+      setPassword("");
+    } catch (exception) {
+      console.log(exception);
+    }
   };
 
   return (
     <div>
       <LoginForm
         username={username}
-        setUsername={setusername}
+        setUsername={setUsername}
         password={password}
         setPassword={setPassword}
         handleLogin={handleLogin}
