@@ -1,4 +1,6 @@
 const Notification = ({ notiInfo }) => {
+  const { message, type } = notiInfo;
+
   const notiStyle = {
     color: "green",
     backgroundColor: "lightGrey",
@@ -14,11 +16,9 @@ const Notification = ({ notiInfo }) => {
     border: "5px solid red",
   };
 
-  if (notiInfo.msg === null) return null;
+  if (message === null) return null;
 
-  return (
-    <div style={notiInfo.type ? errorStyle : notiStyle}>{notiInfo.msg}</div>
-  );
+  return <div style={type === "error" ? errorStyle : notiStyle}>{message}</div>;
 };
 
 export default Notification;

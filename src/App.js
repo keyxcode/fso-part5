@@ -30,22 +30,43 @@ const App = () => {
     }
   }, []);
 
+  const notifyWith = (message, type = "info") => {
+    setNotiInfo({
+      message,
+      type,
+    });
+
+    setTimeout(() => {
+      setNotiInfo({ message: null });
+    }, 3000);
+  };
+
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
       const loggedUser = await loginService.login({ username, password });
       window.localStorage.setItem("loggedBlogUser", JSON.stringify(loggedUser));
+
+      const msg = `welcome ${loggedUser.name}`;
+      notifyWith(msg);
+
       setUser(loggedUser);
       setUsername("");
       setPassword("");
     } catch (exception) {
       console.log(exception);
+
+      const msg = "wrong user name or password";
+      notifyWith(msg, "error");
     }
   };
 
   const handleLogout = () => {
     setUser(null);
     window.localStorage.removeItem("loggedBlogUser");
+
+    const msg = "logout success";
+    notifyWith(msg);
   };
 
   const handleCreateBlog = async (event) => {
@@ -53,11 +74,18 @@ const App = () => {
     try {
       blogService.setToken(user.token);
       await blogService.create({ title, author, url });
+
+      const msg = `a new blog ${title} by ${author} added`;
+      notifyWith(msg);
+
       setTitle("");
       setAuthor("");
       setUrl("");
     } catch (exception) {
       console.log(exception);
+
+      const msg = `an error occured: ${exception.message}`;
+      notifyWith(msg, "error");
     }
   };
 
