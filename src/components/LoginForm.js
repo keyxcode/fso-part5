@@ -21,10 +21,11 @@ const LoginForm = ({
         type="password"
         value={password}
         name="Password"
-        // destructure the event directly to get the target
         onChange={({ target }) => setPassword(target.value)}
       />
     </div>
     <button type="submit">login</button>
   </form>
 );
+
+export default LoginForm;
