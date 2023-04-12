@@ -10,6 +10,9 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [url, setUrl] = useState("");
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -17,7 +20,12 @@ const App = () => {
 
   useEffect(() => {
     const loggedBlogUser = window.localStorage.getItem("loggedBlogUser");
-    if (loggedBlogUser) setUser(JSON.parse(loggedBlogUser));
+
+    if (loggedBlogUser) {
+      const u = JSON.parse(loggedBlogUser);
+      setUser(u);
+      blogService.setToken(u.token);
+    }
   }, []);
 
   const handleLogin = async (event) => {
@@ -38,6 +46,19 @@ const App = () => {
     window.localStorage.removeItem("loggedBlogUser");
   };
 
+  const handleCreateBlog = async (event) => {
+    event.preventDefault();
+    try {
+      blogService.setToken(user.token);
+      await blogService.create({ title, author, url });
+      setTitle("");
+      setAuthor("");
+      setUrl("");
+    } catch (exception) {
+      console.log(exception);
+    }
+  };
+
   return (
     <div>
       {user && (
@@ -46,7 +67,15 @@ const App = () => {
           <div>
             {user.name} logged in<button onClick={handleLogout}>logout</button>
           </div>
-          <BlogForm />
+          <BlogForm
+            title={title}
+            setTitle={setTitle}
+            author={author}
+            setAuthor={setAuthor}
+            url={url}
+            setUrl={setUrl}
+            handleCreateBlog={handleCreateBlog}
+          />
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
           ))}
