@@ -71,6 +71,7 @@ const App = () => {
     try {
       blogService.setToken(user.token);
       const newBlog = await blogService.create({ title, author, url });
+      console.log(newBlog);
 
       const msg = `a new blog ${title} by ${author} added`;
       notifyWith(msg);
@@ -116,12 +117,7 @@ const App = () => {
             <BlogForm createBlog={createBlog} />
           </Togglable>
           {sortedBlogs.map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              username={user.name}
-              likeBlog={likeBlog}
-            />
+            <Blog key={blog.id} blog={blog} likeBlog={likeBlog} />
           ))}
         </div>
       )}
