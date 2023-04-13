@@ -12,9 +12,6 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
   const [notiInfo, setNotiInfo] = useState({ message: null });
 
   useEffect(() => {
@@ -70,8 +67,7 @@ const App = () => {
     notifyWith(msg);
   };
 
-  const handleCreateBlog = async (event) => {
-    event.preventDefault();
+  const createBlog = async ({ title, author, url }) => {
     try {
       blogService.setToken(user.token);
       const newBlog = await blogService.create({ title, author, url });
@@ -80,12 +76,7 @@ const App = () => {
       notifyWith(msg);
 
       setBlogs(blogs.concat(newBlog));
-      setTitle("");
-      setAuthor("");
-      setUrl("");
     } catch (exception) {
-      console.log(exception);
-
       const msg = `an error occured: ${exception.message}`;
       notifyWith(msg, "error");
     }
@@ -101,15 +92,7 @@ const App = () => {
             {user.name} logged in<button onClick={handleLogout}>logout</button>
           </div>
           <Togglable buttonLabel="new note">
-            <BlogForm
-              title={title}
-              setTitle={setTitle}
-              author={author}
-              setAuthor={setAuthor}
-              url={url}
-              setUrl={setUrl}
-              handleCreateBlog={handleCreateBlog}
-            />
+            <BlogForm createBlog={createBlog} />
           </Togglable>
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
