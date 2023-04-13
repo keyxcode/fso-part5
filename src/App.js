@@ -15,7 +15,7 @@ const App = () => {
   const [notiInfo, setNotiInfo] = useState({ message: null });
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((b) => setBlogs(b));
   }, []);
 
   useEffect(() => {
@@ -87,9 +87,8 @@ const App = () => {
       blogService.setToken(user.token);
       await blogService.update(id, updatedBlog);
 
-      const updatedBlogs = blogs.map(
-        (blog) =>
-          (blog = blog.id === id ? { ...blog, likes: updatedBlog.likes } : blog)
+      const updatedBlogs = blogs.map((blog) =>
+        blog.id === id ? { ...blog, likes: updatedBlog.likes } : blog
       );
       setBlogs(updatedBlogs);
 
