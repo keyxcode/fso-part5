@@ -71,7 +71,6 @@ const App = () => {
     try {
       blogService.setToken(user.token);
       const newBlog = await blogService.create({ title, author, url });
-      console.log(newBlog);
 
       const msg = `a new blog ${title} by ${author} added`;
       notifyWith(msg);
@@ -85,16 +84,31 @@ const App = () => {
 
   const likeBlog = async (id, updatedBlog) => {
     try {
+      blogService.setToken(user.token);
+      await blogService.update(id, updatedBlog);
+
       const updatedBlogs = blogs.map(
         (blog) =>
           (blog = blog.id === id ? { ...blog, likes: updatedBlog.likes } : blog)
       );
       setBlogs(updatedBlogs);
 
-      blogService.setToken(user.token);
-      await blogService.update(id, updatedBlog);
-
       const msg = `liked blog ${updatedBlog.title} by ${updatedBlog.author}`;
+      notifyWith(msg);
+    } catch (exception) {
+      const msg = `an error occured: ${exception.message}`;
+      notifyWith(msg, "error");
+    }
+  };
+
+  const deleteBlog = async (id) => {
+    try {
+      blogService.setToken(user.token);
+      await blogService.deleteBlog(id);
+
+      setBlogs(blogs.filter((blog) => blog.id !== id));
+
+      const msg = `deletion success`;
       notifyWith(msg);
     } catch (exception) {
       const msg = `an error occured: ${exception.message}`;
@@ -117,7 +131,13 @@ const App = () => {
             <BlogForm createBlog={createBlog} />
           </Togglable>
           {sortedBlogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} likeBlog={likeBlog} />
+            <Blog
+              key={blog.id}
+              blog={blog}
+              likeBlog={likeBlog}
+              deleteBlog={deleteBlog}
+              currentUsername={user.username}
+            />
           ))}
         </div>
       )}
