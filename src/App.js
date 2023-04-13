@@ -73,11 +73,12 @@ const App = () => {
     event.preventDefault();
     try {
       blogService.setToken(user.token);
-      await blogService.create({ title, author, url });
+      const newBlog = await blogService.create({ title, author, url });
 
       const msg = `a new blog ${title} by ${author} added`;
       notifyWith(msg);
 
+      setBlogs(blogs.concat(newBlog));
       setTitle("");
       setAuthor("");
       setUrl("");
