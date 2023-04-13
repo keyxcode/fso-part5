@@ -82,6 +82,25 @@ const App = () => {
     }
   };
 
+  const likeBlog = async (id, updatedBlog) => {
+    try {
+      const updatedBlogs = blogs.map(
+        (blog) =>
+          (blog = blog.id === id ? { ...blog, likes: updatedBlog.likes } : blog)
+      );
+      setBlogs(updatedBlogs);
+
+      blogService.setToken(user.token);
+      await blogService.update(id, updatedBlog);
+
+      const msg = `liked blog ${updatedBlog.title} by ${updatedBlog.author}`;
+      notifyWith(msg);
+    } catch (exception) {
+      const msg = `an error occured: ${exception.message}`;
+      notifyWith(msg, "error");
+    }
+  };
+
   return (
     <div>
       <Notification notiInfo={notiInfo} />
@@ -95,7 +114,12 @@ const App = () => {
             <BlogForm createBlog={createBlog} />
           </Togglable>
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
+            <Blog
+              key={blog.id}
+              blog={blog}
+              username={user.name}
+              likeBlog={likeBlog}
+            />
           ))}
         </div>
       )}
