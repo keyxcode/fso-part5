@@ -60,5 +60,33 @@ describe("Blog app", function () {
       cy.contains("a blog by cypress");
       cy.contains("an author by cypress");
     });
+
+    it("user can like a blog", function () {
+      cy.contains("create new blog").click();
+      cy.get("#title").type("a blog by cypress");
+      cy.get("#author").type("an author by cypress");
+      cy.get("#url").type("cypress.com");
+      cy.get("#create-blog").click();
+
+      cy.contains("a blog by cypress");
+      cy.contains("an author by cypress");
+    });
+
+    describe("and a blog exists", function () {
+      beforeEach(function () {
+        cy.createBlog({
+          title: "cypress blog 2",
+          author: "cypress author 2",
+          url: "cypress.com2",
+        });
+        cy.visit("");
+      });
+
+      it.only("user can like a blog", function () {
+        cy.contains("view").click();
+        cy.contains("like").click();
+        cy.contains("likes 1");
+      });
+    });
   });
 });

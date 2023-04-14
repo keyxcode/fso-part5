@@ -34,14 +34,14 @@ Cypress.Commands.add("login", ({ username, password }) => {
   });
 });
 
-Cypress.Commands.add("createNote", ({ content, important }) => {
+Cypress.Commands.add("createBlog", ({ title, author, url, likes }) => {
   cy.request({
-    url: "http://localhost:3001/api/notes",
+    url: `${Cypress.env("BACKEND")}/blogs`,
     method: "POST",
-    body: { content, important },
+    body: { title, author, url, likes },
     headers: {
       Authorization: `Bearer ${
-        JSON.parse(localStorage.getItem("loggedNoteappUser")).token
+        JSON.parse(localStorage.getItem("loggedBlogUser")).token
       }`,
     },
   });
