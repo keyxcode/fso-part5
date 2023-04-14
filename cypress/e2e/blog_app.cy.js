@@ -82,16 +82,32 @@ describe("Blog app", function () {
         cy.visit("");
       });
 
-      it.only("user can like a blog", function () {
+      it("user can like a blog", function () {
         cy.contains("view").click();
         cy.contains("like").click();
         cy.contains("likes 1");
       });
 
-      it.only("user can delete their blog", function () {
+      it("user can delete their blog", function () {
         cy.contains("view").click();
         cy.contains("delete").click();
         cy.should("not.contain", "cypress blog 2");
+      });
+
+      it("other users can't see the delete button of this post", function () {
+        cy.contains("logout").click();
+
+        const user = {
+          username: "test2",
+          name: "test_user2",
+          password: "456",
+        };
+        cy.request("POST", `${Cypress.env("BACKEND")}/users`, user);
+
+        cy.login({ username: "test2", password: "456" });
+
+        cy.contains("view").click();
+        cy.should("not.contain", "delete");
       });
     });
   });
