@@ -79,7 +79,6 @@ describe("Blog app", function () {
           author: "cypress author 2",
           url: "cypress.com2",
         });
-        cy.visit("");
       });
 
       it("user can like a blog", function () {
@@ -108,6 +107,34 @@ describe("Blog app", function () {
 
         cy.contains("view").click();
         cy.should("not.contain", "delete");
+      });
+    });
+
+    describe("and several blogs exist", function () {
+      beforeEach(function () {
+        cy.createBlog({
+          title: "my blog",
+          author: "me",
+          url: "me.com",
+          likes: 0,
+        });
+        cy.createBlog({
+          title: "your blog",
+          author: "you",
+          url: "you.com",
+          likes: 1,
+        });
+        cy.createBlog({
+          title: "our blog",
+          author: "us",
+          url: "us.com",
+          likes: 2,
+        });
+      });
+      it("blogs are sorted by likes", function () {
+        cy.get(".blog").eq(0).should("contain", "our blog");
+        cy.get(".blog").eq(1).should("contain", "your blog");
+        cy.get(".blog").eq(2).should("contain", "my blog");
       });
     });
   });
