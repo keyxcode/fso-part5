@@ -87,6 +87,12 @@ describe("Blog app", function () {
         cy.contains("like").click();
         cy.contains("likes 1");
       });
+
+      it.only("user can delete their blog", function () {
+        cy.contains("view").click();
+        cy.contains("delete").click();
+        cy.should("not.contain", "cypress blog 2");
+      });
     });
   });
 });
