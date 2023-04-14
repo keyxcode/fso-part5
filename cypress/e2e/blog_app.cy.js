@@ -4,6 +4,7 @@ describe("Blog app", function () {
   beforeEach(function () {
     cy.request("POST", `${Cypress.env("BACKEND")}/testing/reset`);
 
+    // create new user
     const user = {
       username: "test",
       name: "test_user",
@@ -41,6 +42,23 @@ describe("Blog app", function () {
       cy.get("#login-button").click();
 
       cy.contains("wrong user name or password");
+    });
+  });
+
+  describe("When logged in", function () {
+    beforeEach(function () {
+      cy.login({ username: "test", password: "123" });
+    });
+
+    it("A blog can be created", function () {
+      cy.contains("create new blog").click();
+      cy.get("#title").type("a blog by cypress");
+      cy.get("#author").type("an author by cypress");
+      cy.get("#url").type("cypress.com");
+      cy.get("#create-blog").click();
+
+      cy.contains("a blog by cypress");
+      cy.contains("an author by cypress");
     });
   });
 });
