@@ -51,3 +51,28 @@ test("clicking the view button shows url and likes", async () => {
   expect(screen.queryByText("google", { exact: false })).toBeVisible();
   expect(screen.queryByText("10", { exact: false })).toBeVisible();
 });
+
+test("clicking the like button twice calls the event handler twice", async () => {
+  const blog = {
+    title: "testBook",
+    author: "testAuthor",
+    url: "google",
+    likes: 10,
+    user: {
+      username: "testUser",
+      name: "bill",
+      id: "456",
+    },
+    id: "123",
+  };
+
+  const mockHandler = jest.fn();
+  render(<Blog blog={blog} likeBlog={mockHandler} />);
+
+  const user = userEvent.setup();
+  const button = screen.getByText("like");
+  await user.click(button);
+  await user.click(button);
+
+  expect(mockHandler.mock.calls).toHaveLength(2);
+});
