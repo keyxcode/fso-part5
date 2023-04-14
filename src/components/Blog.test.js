@@ -28,19 +28,26 @@ test("renders title and author only by default", () => {
   expect(screen.queryByText("10", { exact: false })).not.toBeVisible();
 });
 
-// test("clicking the button calls event handler once", async () => {
-//   const note = {
-//     content: "Component testing is done with react-testing-library",
-//     important: true,
-//   };
+test("clicking the view button shows url and likes", async () => {
+  const blog = {
+    title: "testBook",
+    author: "testAuthor",
+    url: "google",
+    likes: 10,
+    user: {
+      username: "testUser",
+      name: "bill",
+      id: "456",
+    },
+    id: "123",
+  };
 
-//   const mockHandler = jest.fn();
+  render(<Blog blog={blog} />);
 
-//   render(<Note note={note} toggleImportance={mockHandler} />);
+  const user = userEvent.setup();
+  const button = screen.getByText("view");
+  await user.click(button);
 
-//   const user = userEvent.setup();
-//   const button = screen.getByText("make not important");
-//   await user.click(button);
-
-//   expect(mockHandler.mock.calls).toHaveLength(1);
-// });
+  expect(screen.queryByText("google", { exact: false })).toBeVisible();
+  expect(screen.queryByText("10", { exact: false })).toBeVisible();
+});
